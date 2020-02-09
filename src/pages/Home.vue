@@ -1,7 +1,10 @@
 <template lang="pug">
   .home
     img(alt="Vue logo" src="../assets/logo.png")
-    h3 LANDING PAGE
+    h3(@click="handleClick") LANDING PAGE
+    p connected user: {{user}}
+    router-link(to="/auth/login") Login
+    router-link(to="/auth/register") Register
 </template>
 
 <script>
@@ -9,6 +12,16 @@
 
 export default {
   name: 'Home',
-  components: {}
+  components: {},
+  computed: {
+    user () {
+      return this.$store.getters['auth/user']
+    }
+  },
+  methods: {
+    handleClick (val) {
+      console.log(val)
+    }
+  }
 }
 </script>
