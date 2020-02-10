@@ -8,7 +8,7 @@ export const authGuard = (to, from, next) => {
       return next()
     }
 
-    authService.loginWithRedirect({ appState: { targetUrl: to.fullPath } })
+    authService.loginWithPopup({ appState: { targetUrl: to.fullPath } })
   }
 
   if (!authService.loading) {

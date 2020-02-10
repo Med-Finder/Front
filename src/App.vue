@@ -1,13 +1,5 @@
 <template lang="pug">
-  <v-app>
-    v-app-bar(
-      app
-      color="primary"
-      dark)
-    <v-content>
-      router-view
-    </v-content>
-  </v-app>
+  router-view
 </template>
 
 <script>

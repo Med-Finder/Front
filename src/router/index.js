@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import { authGuard } from "../auth"
+
 import Home from '../pages/Home.vue'
 import Search from '../pages/Search.vue'
 
-import Login from '../pages/auth/Login.vue'
-import Register from '../pages/auth/Register.vue'
+import Dashboard from "../pages/pharmacy/Dashboard.vue"
 
 Vue.use(VueRouter)
 
@@ -15,16 +16,6 @@ const routes = [
     component: Home
   },
   {
-    path: '/auth/login',
-    name: 'Login',
-    component: Login
-  },
-  {
-    path: '/auth/register',
-    name: 'Register',
-    component: Register
-  },
-  {
     path: '/search/',
     name: 'SearchEmpty',
     component: Search
@@ -33,6 +24,12 @@ const routes = [
     path: '/search/:query',
     name: 'Search',
     component: Search
+  },
+  {
+    path: '/pharmacy/dashboard',
+    name: 'Dashboard',
+    component: Dashboard,
+    beforeEnter: authGuard
   }
 ]
 
