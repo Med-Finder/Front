@@ -10,6 +10,5 @@ export default {
     setUser: (state, val) => { state.user = val }
   },
   actions: {
-
   }
 }

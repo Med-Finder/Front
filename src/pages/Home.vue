@@ -3,7 +3,9 @@
     img(alt="Vue logo" src="../assets/logo.png")
     h3(@click="handleClick") LANDING PAGE
     p connected user: {{user}}
-    router-link(to="/auth/login") Login
+    div(v-if="!$auth.loading")
+    v-btn(v-if="$auth.isAuthenticated" @click="logout") Logout
+    v-btn(v-else @click="login") Login
     router-link(to="/auth/register") Register
 </template>
 
@@ -21,6 +23,16 @@ export default {
   methods: {
     handleClick (val) {
       console.log(val)
+    },
+    // Log the user in
+    login () {
+      this.$auth.loginWithRedirect()
+    },
+    // Log the user out
+    logout () {
+      this.$auth.logout({
+        returnTo: window.location.origin
+      })
     }
   }
 }
