@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # med_finder
 
 ## Project setup
