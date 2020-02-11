@@ -1,71 +1,108 @@
 <template lang="pug">
-  //- div(v-if="!query") NO query
-  //- div(v-else) SEARCH {{ query }}
   v-app
     v-content
-      section
-        v-row(align="center" justify="center" style="height:400px")
-          v-col(cols="4")
-            v-text-field(
-              v-model="query"
-              placeholder="Medicine name here"
-              hideDetails
-              clearable
-              append-icon="fa fa-search"
-              filled )
-          //- v-col(cols="2")
-            v-btn() Search
-              v-icon fa fa-search
-      section(v-if="query!=''")
-        v-row(align="center" justify="center" style="height:400px")
-          v-col(cols="12")
-            GmapMap(
-              ref="mapRef"
-              :center="map_data.center"
-              :zoom="map_data.zoom"
-              :map-type-id="map_data.type"
-              style="width: 600px; height: 300px; margin-left: auto; margin-right: auto;")
-              GmapMarker(
-                :key="index"
-                v-for="(m, index) in markers"
-                :position="m.position"
-                :clickable="true"
-                @click="panMap(m.position)")
+      l-map(
+        ref="map_ref"
+        :options="map_options"
+        :center.sync="map_data.center"
+        style="height: 100vh;"
+        @ready="initMap" )
+        l-control-zoom(position="topright")
+        l-tile-layer(
+          :url="map_data.url"
+          :attribution="map_data.attribution" )
+        l-layer-group(ref="markers_layer" @ready="drawItems(items)")
+        l-feature-group(ref="features")
+          l-popup(ref="popup")
+            v-card(flat width="100px")
+              v-card-text(v-if="selectedItem") {{selectedItem.name}}
+        l-control( position="topleft" )
+          v-text-field(
+            v-model="query"
+            color="primary"
+            backgroundColor="#fff"
+            placeholder="Medicine name here"
+            clearable solo filled
+            style="width: 400px"
+            append-icon="fa fa-search" )
 
 </template>
 
 <script>
-import {gmapApi} from 'vue2-google-maps'
+import 'leaflet/dist/leaflet.css'
+import L from 'leaflet'
+import * as Vue2Leaflet from 'vue2-leaflet'
 
 export default {
+  components: {
+    'l-map'          : Vue2Leaflet.LMap,
+    'l-tile-layer'   : Vue2Leaflet.LTileLayer,
+    'l-layer-group'  : Vue2Leaflet.LLayerGroup,
+    'l-feature-group': Vue2Leaflet.LFeatureGroup,
+    'l-control-zoom' : Vue2Leaflet.LControlZoom,
+    'l-control'      : Vue2Leaflet.LControl,
+    'l-popup'        : Vue2Leaflet.LPopup,
+  },
   data: function () {
     return {
-      query: '',
-      map_data: {
-        center: {lat:36.758174, lng:10.277265},
-        zoom: 12,
-        type: "terrain"
+      query       : '',
+      map         : null,
+      selectedItem: null,
+      map_options : {
+        preferCanvas: true,
+        zoomControl : false,
+        zoom        : 13,
       },
-      markers: [
-        {position: {lat:36.7164, lng:10.255} },
-        {position: {lat:36.7174, lng:10.275} },
-        {position: {lat:36.7184, lng:10.285} },
-        {position: {lat:36.7194, lng:10.295} },
-        {position: {lat:36.7104, lng:10.205} },
-      ]
+      map_data: {
+        center     : {lat:36.758174, lng:10.277265},
+        url        : "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      },
+      items: [
+        {name: "Pharma 1", position: {lat:36.7174, lng:10.275} },
+        {name: "Pharma 2", position: {lat:36.7184, lng:10.285} },
+        {name: "Pharma 3", position: {lat:36.7194, lng:10.295} },
+        {name: "Pharma 4", position: {lat:36.7164, lng:10.255} },
+        {name: "Pharma 5", position: {lat:36.7104, lng:10.205} },
+      ],
     }
-  },
-  computed: {
-    google: gmapApi
   },
   created () {
     this.query = this.$route.params.query || ''
   },
+  watch: {
+		items(val) {
+			this.drawItems(val);
+		}
+  },
   methods: {
-    panMap(position) {
-      this.$refs.mapRef.panTo(position)
-    }
+    initMap(mapObject) {
+			this.map = mapObject;
+    },
+    drawItems(items) {
+			let vm = this;
+			let group = vm.$refs.markers_layer.mapObject;
+			if(!group) return;
+
+			group.clearLayers();
+			items.forEach(item => {
+        let lat_lng  = L.latLng(item.position);
+        let icon_img = require('leaflet/dist/images/marker-icon.png');
+        let icon     = L.icon({iconUrl: icon_img});
+        let marker   = L.marker(lat_lng, {icon: icon});
+				marker.on('click', () => vm.openPopup(item), vm);
+				group.addLayer(marker);
+			});
+		},
+    openPopup(item) {
+			let lat_lng = L.latLng(item.position);
+			this.selectedItem = item;
+			this.$refs.features.mapObject.openPopup(lat_lng);
+		},
   }
 
 }
 </script>
+
+<style lang="scss" scoped>
+</style>
