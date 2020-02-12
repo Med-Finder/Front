@@ -6,7 +6,8 @@
         :options="map_options"
         :center.sync="map_data.center"
         style="height: 100vh;"
-        @ready="initMap" )
+        @ready="initMap"
+        @location-found="locationFound" )
         l-control-zoom(position="topright")
         l-tile-layer(
           :url="map_data.url"
@@ -16,6 +17,7 @@
           l-popup(ref="popup")
             v-card(flat width="100px")
               v-card-text(v-if="selectedItem") {{selectedItem.name}}
+        l-locatecontrol( :options="locate_options" )
         l-control( position="topleft" )
           v-text-field(
             v-model="query"
@@ -32,6 +34,7 @@
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import * as Vue2Leaflet from 'vue2-leaflet'
+import Vue2Leaflet_LControlLocate from 'vue2-leaflet-locatecontrol'
 
 export default {
   components: {
@@ -41,6 +44,7 @@ export default {
     'l-feature-group': Vue2Leaflet.LFeatureGroup,
     'l-control-zoom' : Vue2Leaflet.LControlZoom,
     'l-control'      : Vue2Leaflet.LControl,
+    'l-locatecontrol': Vue2Leaflet_LControlLocate,
     'l-popup'        : Vue2Leaflet.LPopup,
   },
   data: function () {
@@ -57,6 +61,10 @@ export default {
         center     : {lat:36.758174, lng:10.277265},
         url        : "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      },
+      locate_options: {
+        position            : 'topright',
+        keepCurrentZoomLevel: true
       },
       items: [
         {name: "Pharma 1", position: {lat:36.7174, lng:10.275} },
@@ -98,7 +106,10 @@ export default {
 			let lat_lng = L.latLng(item.position);
 			this.selectedItem = item;
 			this.$refs.features.mapObject.openPopup(lat_lng);
-		},
+    },
+    locationFound(val) {
+      console.log('val',val);
+    }
   }
 
 }
