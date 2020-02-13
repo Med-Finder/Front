@@ -34,7 +34,8 @@
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import * as Vue2Leaflet from 'vue2-leaflet'
-import Vue2Leaflet_LControlLocate from 'vue2-leaflet-locatecontrol'
+import Vue2Leaflet_LControlLocate from 'vue2-leaflet-locatecontrol';
+import debounce from '../plugins/debounce';
 
 export default {
   components: {
@@ -66,13 +67,18 @@ export default {
         position            : 'topright',
         keepCurrentZoomLevel: true
       },
-      items: [
-        {name: "Pharma 1", position: {lat:36.7174, lng:10.275} },
-        {name: "Pharma 2", position: {lat:36.7184, lng:10.285} },
-        {name: "Pharma 3", position: {lat:36.7194, lng:10.295} },
-        {name: "Pharma 4", position: {lat:36.7164, lng:10.255} },
-        {name: "Pharma 5", position: {lat:36.7104, lng:10.205} },
-      ],
+      // items: [
+      //   {name: "Pharma 1", position: {lat:36.7174, lng:10.275} },
+      //   {name: "Pharma 2", position: {lat:36.7184, lng:10.285} },
+      //   {name: "Pharma 3", position: {lat:36.7194, lng:10.295} },
+      //   {name: "Pharma 4", position: {lat:36.7164, lng:10.255} },
+      //   {name: "Pharma 5", position: {lat:36.7104, lng:10.205} },
+      // ],
+    }
+  },
+  computed: {
+    items () {
+      return this.$store.getters['pharmacies'] || [];
     }
   },
   created () {
@@ -81,7 +87,22 @@ export default {
   watch: {
 		items(val) {
 			this.drawItems(val);
-		}
+    },
+    query: debounce(function(query) {
+      let center = this.map_data.center;
+      let lat_lng = {lng: center.lng, lat: center.lat};
+      this.$store.dispatch('search', {
+        query: query,
+        pos  : lat_lng
+      });
+    }, 700),
+    'map_data.center'(pos) {
+      let lat_lng = {lng: pos.lng, lat: pos.lat};
+      this.$store.dispatch('search', {
+        query: this.query,
+        pos  : lat_lng
+      });
+    }
   },
   methods: {
     initMap(mapObject) {
@@ -94,7 +115,7 @@ export default {
 
 			group.clearLayers();
 			items.forEach(item => {
-        let lat_lng  = L.latLng(item.position);
+        let lat_lng  = L.latLng({lat: item.lat, lng: item.lng});
         let icon_img = require('leaflet/dist/images/marker-icon.png');
         let icon     = L.icon({iconUrl: icon_img});
         let marker   = L.marker(lat_lng, {icon: icon});
