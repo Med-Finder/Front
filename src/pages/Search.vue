@@ -115,7 +115,8 @@ export default {
 
 			group.clearLayers();
 			items.forEach(item => {
-        let lat_lng  = L.latLng({lat: item.lat, lng: item.lng});
+        // let lat_lng  = L.latLng({lat: item.lat, lng: item.lng});
+        let lat_lng  = L.latLng(item.coordinates);
         let icon_img = require('leaflet/dist/images/marker-icon.png');
         let icon     = L.icon({iconUrl: icon_img});
         let marker   = L.marker(lat_lng, {icon: icon});
@@ -124,13 +125,13 @@ export default {
 			});
 		},
     openPopup(item) {
-			let lat_lng = L.latLng(item.position);
+			let lat_lng = L.latLng(item.coordinates);
 			this.selectedItem = item;
 			this.$refs.features.mapObject.openPopup(lat_lng);
     },
     locationFound(val) {
       console.log('val',val);
-    }
+    },
   }
 
 }
