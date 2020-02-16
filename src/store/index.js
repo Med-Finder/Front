@@ -5,6 +5,7 @@ import {vuexLocal} from "../plugins/vuex_persistance"
 import AuthStore from './auth'
 import SearchStore from './search'
 import PharmaStore from './pharma'
+import MedicineStore from './medicine'
 
 Vue.use(Vuex)
 
@@ -19,8 +20,9 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    auth: AuthStore,
-    search: SearchStore,
-    pharma: PharmaStore,
+    auth    : AuthStore,
+    search  : SearchStore,
+    pharma  : PharmaStore,
+    medicine: MedicineStore,
   }
 })

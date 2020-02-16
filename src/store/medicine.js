@@ -1,15 +1,45 @@
-const model = {
-	name               : "ACONITUM FEROX",
-	medicineClass      : "ACONITUM FEROX",
-	cost               : 42,
-	administrationRoute: "id massa id nisl venenatis lacinia aenean sit amet justo morbi ut odio cras mi pede malesuada in",
-	dosageForm         : "cursus vestibulum proin eu mi nulla ac enim in tempor turpis nec euismod scelerisque quam turpis",
-	dosageschedule     : "nulla pede ullamcorper augue a suscipit nulla elit ac nulla sed vel enim sit",
-	medicineUnit       : 49,
-	expiringDay        : "12/28/2019",
-	prescriptionStatus : false,
-	code               : "7704",
-	warning            : "odio condimentum id luctus nec molestie sed justo pellentesque viverra pede ac",
-	sameAs             : "at dolor quis odio consequat varius integer ac leo pellentesque ultrices mattis odio donec vitae nisi nam",
-	quantity           : 36
+import Vue from 'vue'
+
+export default {
+  state: {
+		medicines: []
+	},
+  mutations: {
+		setMedicines(state, val) {
+			Vue.set(state, 'medicines', val);
+		},
+		addMedicine(state, val) {
+			state.medicines.push(val);
+		}
+	},
+	actions: {
+    createMedicine (context, medicine) {
+			return new Promise((resolve, reject) => {
+				let med_add_url = "/medicine/save";
+				let add_to_pharma_url = "/pharmacy/addmedicine";
+
+				// send to server
+				Vue.axios.post(med_add_url, medicine).then((res) => {
+					// Medicine is ready.
+					// Add medicine to state
+					context.commit('addMedicine', res.data);
+
+					// Now add it to the pharmacy
+					let data = {
+						medicineId: res.data._id,
+						pharmacyId: context.getters['user']._id
+					}
+					Vue.axios.post(add_to_pharma_url, data).then((res) => {
+						return resolve(res.data);
+					}).catch( err => reject(err) );
+				}).catch( err => reject(err) )
+
+			});
+    }
+  },
+  getters: {
+		medicines(state) {
+			return state.medicines;
+		}
+	}
 }

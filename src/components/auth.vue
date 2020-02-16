@@ -315,7 +315,7 @@ export default {
       // call store
       vm.$store.dispatch('login', payload)
       .then(() => {
-        vm.$store.commit('setUser', {email: fd.email});
+        // vm.$store.commit('setUser', {email: fd.email});
         vm.redirect(vm.login_form.user_type)
       })
       .catch(() => vm.login_form.errors = "Error Login!");

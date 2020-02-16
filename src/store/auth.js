@@ -63,7 +63,9 @@ export default {
 					if(res.data.err) {
 						console.log(res.data.err);
 					}else {
+						console.log('res.data',res.data);
 						if(res.data.token)
+						context.commit('setUser', res.data.user);
 						context.commit('setToken', res.data.token);
 						context.commit('setAuthenticated', true);
 						resolve(res.data);

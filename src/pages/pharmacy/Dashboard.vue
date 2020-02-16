@@ -45,17 +45,32 @@ export default {
         { text: 'Name', align: 'left', value: 'name', },
         { text: '', value: 'action', align: 'right', sortable: false },
       ],
-      items: [
-        {name: 'med 1'},
-        {name: 'med 2'},
-        {name: 'med 3'},
-      ],
+      // items: this.$store.getters['medicines'],
       selectedIndex: -1,
-      formItem     : {name: ''},
+      formItem     : {
+        name               : '',
+        medicineClass      : 'test',
+        cost               : 99,
+        administrationRoute: 'test',
+        dosageForm         : 'test',
+        dosageschedule     : 'test',
+        medicineUnit       : 99,
+        // expiringDay        : "2021-01-01",
+        expiringDay        : new Date("2021-01-01"),
+        prescriptionStatus : false,
+        code               : 'test',
+        warning            : 'test',
+        sameAs             : 'test',
+        quantity           : 99
+
+      },
       dialog       : false
     }
   },
   computed: {
+    items() {
+      return this.$store.getters['medicines'];
+    },
     formTitle () {
       return (this.selectedIndex == -1) ? 'New Medicine' : 'Edit Medicine';
     },
@@ -72,12 +87,14 @@ export default {
     resetItem() {
       this.selectedIndex = -1;
       // use $set to make new object reactive
-      this.$set(this, "formItem", {name: ''});
+      // this.$set(this, "formItem", {name: ''});
+      this.formItem.name = '';
     },
     editItem(item) {
       this.selectedIndex = this.items.indexOf(item);
       let new_copy = Object.assign({}, item);
-      this.$set(this, "formItem", new_copy); // make new copy
+      // this.$set(this, "formItem", new_copy); // make new copy
+      this.formItem.name = new_copy.name;
       this.dialog = true;
     },
     deleteItem(item) {
@@ -97,7 +114,7 @@ export default {
       let new_item = Object.assign({}, this.formItem);
       //TODO: save item is store...
       if(this.selectedIndex == -1) {
-        this.items.push(new_item);
+        this.storeCreate(new_item);
       }else {
         this.$set(this.items, this.selectedIndex, new_item);
         // Object.assign(this.items[index], new_item);
@@ -106,6 +123,15 @@ export default {
       }
       this.dialog = false;
     },
+    storeCreate(item) {
+      let vm = this;
+      vm.$store.dispatch('createMedicine', item)
+      .then(() => {
+        // vm.items.push(res);
+        vm.selectedIndex == -1;
+      })
+      .catch((err) => console.log(err))
+    }
   }
 
 }
