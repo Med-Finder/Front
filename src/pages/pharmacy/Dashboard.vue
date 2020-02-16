@@ -70,6 +70,7 @@ export default {
   },
   methods: {
     resetItem() {
+      this.selectedIndex = -1;
       // use $set to make new object reactive
       this.$set(this, "formItem", {name: ''});
     },
