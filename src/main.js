@@ -5,23 +5,8 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import './plugins/axios'
 
-import { Auth0Plugin } from './auth'
-import { domain, clientId } from '../auth_config.json'
-
 Vue.config.productionTip = false
 
-
-Vue.use(Auth0Plugin, {
-  domain,
-  clientId,
-  onRedirectCallback: appState => {
-    router.push(
-      appState && appState.targetUrl
-        ? appState.targetUrl
-        : window.location.pathname
-    )
-  }
-})
 
 new Vue({
   router,

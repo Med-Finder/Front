@@ -10,13 +10,9 @@
     v-app-bar(absolute flat color="transparent")
       v-toolbar-title Med Finder
       v-spacer
-      v-btn(text v-if="$auth.isAuthenticated" @click="logout")
-        |Logout
-        v-icon(right) fa fa-sign-in
-      v-btn(text v-if="!$auth.isAuthenticated && !$auth.loading" @click="login")
-        |Login
-        v-icon(right) fa fa-sign-in
+      v-btn(color="error" @click="modal = true") Login
     v-content
+      auth-modal(v-model="modal" tab="register")
       section
         v-parallax(src="../assets/hero.jpeg" height="600")
           v-layout.white--text(column="" align-center="" justify-center="")
@@ -120,24 +116,31 @@
 
 <script>
 // @ is an alias to /src
+import AuthModal from "@/components/auth";
 
 export default {
   name: 'Home',
-  components: {},
+  components: {
+    'auth-modal': AuthModal
+  },
+  data: () => ({
+    modal: false,
+  }),
   computed: {
     user () {
       return this.$store.getters['auth/user']
     }
   },
   watch: {
-    "$auth.isAuthenticated": {
-      immediate: true,
-      handler(val) {
-        if(val === true) {
-          this.$router.replace("/pharmacy/dashboard")
-        }
-      }
-    }
+    // "$auth.isAuthenticated": {
+    //   immediate: true,
+    //   handler(val) {
+    //     if(val === true) {
+    //       let user_url = this.auth_type ;
+    //       this.$router.replace(`/${user_url}/dashboard`);
+    //     }
+    //   }
+    // }
   },
   methods: {
     handleClick (val) {
@@ -145,13 +148,9 @@ export default {
     },
     // Log the user in
     login () {
-      this.$auth.loginWithPopup()
     },
     // Log the user out
     logout () {
-      this.$auth.logout({
-        returnTo: window.location.origin
-      })
     }
   }
 }

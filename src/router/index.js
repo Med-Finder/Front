@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import { authGuard } from "../auth"
 
 import PharmaLayout from "../layouts/Pharma.vue";
 
@@ -8,6 +7,8 @@ import Home from '../pages/Home.vue'
 import Search from '../pages/Search.vue'
 
 import Dashboard from "../pages/pharmacy/Dashboard.vue"
+
+import {connectedOnly} from "./guards";
 
 Vue.use(VueRouter)
 
@@ -30,13 +31,13 @@ const routes = [
   {
 		path: '/pharmacy',
 		component: PharmaLayout,
-		beforeEnter: authGuard,
+		beforeEnter: connectedOnly,
 		children: [
 			{
 				path: 'dashboard',
-				name: 'dashboard',
+				name: 'dashboard_pharma',
 				component: Dashboard,
-			},
+			}
 		]
 	}
 ]

@@ -14,7 +14,14 @@ export default {
 
   data: () => ({
     //
-  })
+  }),
+
+  // Redirect whenever the user logout.
+  watch: {
+    "$store.state.auth.user"(val) {
+      if(!val) this.$router.push("/");
+    }
+  }
 }
 </script>
 
