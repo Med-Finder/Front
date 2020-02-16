@@ -6,13 +6,13 @@
         :options="map_options"
         :center.sync="map_data.center"
         style="height: 100vh;"
-        @ready="initMap"
-        @location-found="locationFound" )
+        @ready="initMap")
         l-control-zoom(position="topright")
         l-tile-layer(
           :url="map_data.url"
           :attribution="map_data.attribution" )
         l-layer-group(ref="markers_layer" @ready="drawItems(items)")
+        l-layer-group(ref="user_layer")
         l-feature-group(ref="features")
           l-popup(ref="popup")
             v-card(flat width="100px")
@@ -59,7 +59,7 @@ export default {
         zoom        : 13,
       },
       map_data: {
-        center     : {lat:36.758174, lng:10.277265},
+        center     : {lat:36, lng:10},
         url        : "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       },
@@ -106,7 +106,27 @@ export default {
   },
   methods: {
     initMap(mapObject) {
-			this.map = mapObject;
+      this.map = mapObject;
+      this.locateMap();
+    },
+    locateMap() {
+      let map = this.map;
+      let user_layer = this.$refs.user_layer.mapObject;
+			if(!user_layer) return;
+      /* This will return map so you can do chaining */
+      map.locate({setView: true, watch: true})
+      .on('locationfound', function(e){
+        // var marker = L.marker([e.latitude, e.longitude]).bindPopup('Your are here :)');
+        var circle = L.circle([e.latitude, e.longitude], e.accuracy/2, {
+          weight     : 10,
+          color      : 'red',
+          fillColor  : 'red',
+          fillOpacity: 0.5
+        });
+        user_layer.clearLayers();
+        // user_layer.addLayer(marker);
+        user_layer.addLayer(circle);
+      });
     },
     drawItems(items) {
 			let vm = this;
@@ -124,12 +144,9 @@ export default {
 			});
 		},
     openPopup(item) {
-			let lat_lng = L.latLng(item.coordinates);
+			let lat_lng = L.latLng({lng: item.coordinates[0], lat: item.coordinates[1]});
 			this.selectedItem = item;
 			this.$refs.features.mapObject.openPopup(lat_lng);
-    },
-    locationFound(val) {
-      console.log('val',val);
     },
   }
 
