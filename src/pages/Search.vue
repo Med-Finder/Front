@@ -117,7 +117,7 @@ export default {
 			items.forEach(item => {
         let lat_lng  = L.latLng({lng: item.coordinates[0], lat: item.coordinates[1]});
         let icon_img = require('leaflet/dist/images/marker-icon.png');
-        let icon     = L.icon({iconUrl: icon_img});
+        let icon     = L.icon({iconUrl: icon_img, iconAnchor: [12, 20],});
         let marker   = L.marker(lat_lng, {icon: icon});
 				marker.on('click', () => vm.openPopup(item), vm);
 				group.addLayer(marker);
