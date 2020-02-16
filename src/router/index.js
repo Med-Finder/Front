@@ -8,7 +8,7 @@ import Search from '../pages/Search.vue'
 
 import Dashboard from "../pages/pharmacy/Dashboard.vue"
 
-import {connectedOnly} from "./guards";
+import {connectedOnly, waitLocalData} from "./guards";
 
 Vue.use(VueRouter)
 
@@ -31,7 +31,10 @@ const routes = [
   {
 		path: '/pharmacy',
 		component: PharmaLayout,
-		beforeEnter: connectedOnly,
+		beforeEnter: (to, from, next) => {
+      waitLocalData(to, from, next);
+      connectedOnly(to, from, next);
+    },
 		children: [
 			{
 				path: 'dashboard',

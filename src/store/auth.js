@@ -34,9 +34,14 @@ export default {
 					if(res.data.err) {
 						console.log(res.data.err);
 					}else {
-						context.commit('setUser', res.data);
-						context.commit('authenticated', true);
-						resolve(res.data);
+						let login_payload = {
+							type : data.type,
+							infos: {
+								email   : data.infos.email,
+								password: data.infos.password,
+							}
+						}
+						context.dispatch('login', login_payload).then(resolve(res.data));
 					}
 				}).catch( err => reject(err) )
 
@@ -76,6 +81,12 @@ export default {
   getters: {
 		user(state) {
 			return state.user;
+		},
+		token(state) {
+			return state.token;
+		},
+		authenticated(state) {
+			return state.authentication;
 		},
 	}
 }

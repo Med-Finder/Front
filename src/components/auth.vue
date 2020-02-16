@@ -113,6 +113,11 @@ v-dialog(v-model="dialog" max-width="500px")
                 //- span Please provide your pharmacy's informations
                 v-text-field(
                   filled
+                  label="Pharmacy name"
+                  v-model="register_form.data.pharmaName"
+                  :rules="rules.name")
+                v-text-field(
+                  filled
                   label="Address"
                   v-model="register_form.data.address"
                   :rules="rules.address")
@@ -195,20 +200,21 @@ export default {
         user_type: 'pharmacy',
         setup: false,
         data: {
-          email         : 'lee@nox.com',
-          firstName     : 'lee',
-          lastName      : 'nox',
+          email         : '',
+          firstName     : '',
+          lastName      : '',
+          pharmaName    : '',
           address       : undefined,
           phone         : '',
-          password      : 'password',
-          password_check: 'password',
+          password      : '',
+          password_check: '',
           coords        : {
-            lng: '10',
-            lat: '36'
+            lng: '',
+            lat: ''
           },
           hours: {
-            opening: '07',
-            closing: '19'
+            opening: '',
+            closing: ''
           }
         }
       },
@@ -270,14 +276,15 @@ export default {
       this.register_form.setup = true;
     },
     register() {
-      let fd = this.register_form.data; // form data
-      if(!this.$refs.setup_form.validate()) return;
+      let vm = this;
+      let fd = vm.register_form.data; // form data
+      if(!vm.$refs.setup_form.validate()) return;
       let payload = {
-        type: this.register_form.user_type,
+        type: vm.register_form.user_type,
         infos: {
           firstName  : fd.firstName,
           lastName   : fd.lastName,
-          name       : `${fd.firstName} ${fd.lastName}`,
+          name       : fd.pharmaName,
           email      : fd.email,
           password   : fd.password,
           password2  : fd.password_check,
@@ -290,9 +297,11 @@ export default {
       };
 
       // call store
-      this.$store.dispatch('register', payload)
-      .then(res => console.log(res))
-      .catch(() => this.register_form.errors = "Error registering account!");
+      vm.$store.dispatch('register', payload)
+      .then(() => {
+        vm.$store.commit('setUser', {email: fd.email});
+        vm.redirect(vm.register_form.user_type)})
+      .catch(() => vm.register_form.errors = "Error registering account!");
     },
     login() {
       let vm = this;
@@ -306,7 +315,7 @@ export default {
       // call store
       vm.$store.dispatch('login', payload)
       .then(() => {
-        vm.$store.commit('setUser', fd);
+        vm.$store.commit('setUser', {email: fd.email});
         vm.redirect(vm.login_form.user_type)
       })
       .catch(() => vm.login_form.errors = "Error Login!");
