@@ -115,8 +115,7 @@ export default {
 
 			group.clearLayers();
 			items.forEach(item => {
-        // let lat_lng  = L.latLng({lat: item.lat, lng: item.lng});
-        let lat_lng  = L.latLng(item.coordinates);
+        let lat_lng  = L.latLng({lng: item.coordinates[0], lat: item.coordinates[1]});
         let icon_img = require('leaflet/dist/images/marker-icon.png');
         let icon     = L.icon({iconUrl: icon_img});
         let marker   = L.marker(lat_lng, {icon: icon});
