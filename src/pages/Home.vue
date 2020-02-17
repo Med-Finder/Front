@@ -8,16 +8,19 @@
     router-link(to="/auth/register") Register
   v-app(light="")
     v-app-bar(absolute flat color="transparent")
-      v-toolbar-title Med Finder
+      v-toolbar-title
+        img(src="../assets/title.png" height="50" )
       v-spacer
-      v-btn(color="error" @click="modal = true") Login
+      v-btn(text color="white" @click="modal = true") Pharmacy Login
+      v-spacer
+      v-btn(text color="white")
     v-content
       auth-modal(v-model="modal" tab="register")
       section
         v-parallax(src="../assets/hero.jpeg" height="600")
           v-layout.white--text(column="" align-center="" justify-center="")
-            img(src="../assets/vuetify.png" alt="Vuetify.js" height="200")
-            h1.white--text.mb-2.display-1.text-center Parallax Template
+            <img src="../assets/vuetify.png" class="animated pulse infinite" alt="Logo" id="animated" height="200">
+            h1.white--text.mb-2.display-1.text-center Med Finder
             .subheading.mb-4.text-center Powered by Vuetify
             v-btn.mt-12(color="blue lighten-2" dark="" large="" href="/search")
               | Get Started
@@ -25,7 +28,7 @@
         v-layout.my-12(column="" wrap="" align-center="")
           v-flex.my-4(xs12="" sm4="")
             .text-center
-              h2.headline The best way to start developing
+              h2.headline An Inovative Way To Locate Your Meds
               span.subheading
                 | Cras facilisis mi vitae nunc
           v-flex(xs12="")
@@ -34,9 +37,19 @@
                 v-flex(xs12="" md4="")
                   v-card.transparent(flat="")
                     v-card-text.text-center
-                      v-icon.blue--text.text--lighten-2(x-large="") mdi-palette
+                      v-icon.blue--text.text--lighten-2(x-large="") mdi-map-marker
                     v-card-title.layout.justify-center(primary-title="")
-                      .headline.text-center Material Design
+                      .headline.text-center Localization
+                    v-card-text
+                      | A dynamic search that automatically detects your position.
+                      | An accurate map that shows the nearest pharmacies that have your medicines on ready and available.
+                      | Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+                v-flex(xs12="" md4="")
+                  v-card.transparent(flat="")
+                    v-card-text.text-center
+                      v-icon.blue--text.text--lighten-2(x-large="") mdi-hospital
+                    v-card-title.layout.justify-center(primary-title="")
+                      .headline Appointments
                     v-card-text
                       | Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare.
                       | Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
@@ -44,19 +57,9 @@
                 v-flex(xs12="" md4="")
                   v-card.transparent(flat="")
                     v-card-text.text-center
-                      v-icon.blue--text.text--lighten-2(x-large="") mdi-flash
+                      v-icon.blue--text.text--lighten-2(x-large="") mdi-library-books
                     v-card-title.layout.justify-center(primary-title="")
-                      .headline Fast development
-                    v-card-text
-                      | Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare.
-                      | Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-                      | Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.
-                v-flex(xs12="" md4="")
-                  v-card.transparent(flat="")
-                    v-card-text.text-center
-                      v-icon.blue--text.text--lighten-2(x-large="") mdi-wrench
-                    v-card-title.layout.justify-center(primary-title="")
-                      .headline.text-center Completely Open Sourced
+                      .headline.text-center Collection of medicines
                     v-card-text
                       | Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare.
                       | Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
@@ -74,7 +77,7 @@
             v-flex(xs12="" sm4="")
               v-card.transparent(flat="")
                 v-card-title.layout.justify-center(primary-title="")
-                  .headline Company info
+                  .headline Info
                 v-card-text
                   | Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare.
                   | Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
@@ -90,27 +93,19 @@
                     v-list-item-action
                       v-icon.blue--text.text--lighten-2 mdi-phone
                     v-list-item-content
-                      v-list-item-title 777-867-5309
+                      v-list-item-title ~99887766
                   v-list-item
                     v-list-item-action
                       v-icon.blue--text.text--lighten-2 mdi-map-marker
                     v-list-item-content
-                      v-list-item-title Chicago, US
+                      v-list-item-title Ariana, TN
                   v-list-item
                     v-list-item-action
                       v-icon.blue--text.text--lighten-2 mdi-email
                     v-list-item-content
-                      v-list-item-title john@vuetifyjs.com
+                      v-list-item-title MEVN@MEVN.com
       v-footer(color="blue darken-2")
         v-layout(row="" wrap="" align-center="")
-          v-flex(xs12="")
-            .white--text.ml-4
-              | Made with
-              v-icon.red--text mdi-heart
-              |               by
-              a.white--text(href="https://vuetifyjs.com" target="_blank") Vuetify
-              |               and
-              a.white--text(href="https://github.com/vwxyzjn") Costa Huang
 
 </template>
 
@@ -119,16 +114,16 @@
 import AuthModal from "@/components/auth";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
-    'auth-modal': AuthModal
+    "auth-modal": AuthModal
   },
   data: () => ({
-    modal: false,
+    modal: false
   }),
   computed: {
-    user () {
-      return this.$store.getters['auth/user']
+    user() {
+      return this.$store.getters["auth/user"];
     }
   },
   watch: {
@@ -143,15 +138,13 @@ export default {
     // }
   },
   methods: {
-    handleClick (val) {
-      console.log(val)
+    handleClick(val) {
+      console.log(val);
     },
     // Log the user in
-    login () {
-    },
+    login() {},
     // Log the user out
-    logout () {
-    }
+    logout() {}
   }
-}
+};
 </script>
